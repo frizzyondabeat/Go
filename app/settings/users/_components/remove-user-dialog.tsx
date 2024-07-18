@@ -6,7 +6,8 @@ import { User } from './users-table';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/app/_api/axios';
 import { toastHandler } from '@/utils/toast';
-import { Trash2 } from 'lucide-react';
+import { LoaderCircle, Trash2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export const RemoveUserDialog = ({ row }: { row: Row<User> }) => {
     const queryClient = useQueryClient();
@@ -64,9 +65,22 @@ export const RemoveUserDialog = ({ row }: { row: Row<User> }) => {
                         <Button variant={'outline'} onClick={() => setOpen(false)}>
                             Cancel action
                         </Button>
-                        <Button variant={'destructive'} onClick={onSubmit}>
-                            <Trash2 className="mr-2 size-4" />
-                            Yes, Delete
+                        <Button
+                            variant={'outline'}
+                            onClick={onSubmit}
+                            className="border-red-500 bg-red-100 text-red-500 transition-all duration-300 ease-in-out hover:border-0 hover:bg-red-500 hover:text-white"
+                        >
+                            {isPending ? (
+                                <div className="flex items-center justify-center gap-2">
+                                    <LoaderCircle className={cn('animate-spin')} size={24} />
+                                    <span>Deleting user...</span>
+                                </div>
+                            ) : (
+                                <>
+                                    <Trash2 className="mr-2 size-4" />
+                                    Yes, Delete
+                                </>
+                            )}
                         </Button>
                     </div>
                 </div>

@@ -3,6 +3,7 @@ import Profile from '@/public/images/profile.png';
 import { Bell, ChevronDown, CircleHelp, Search, Settings, Wallet } from 'lucide-react';
 import Image from 'next/image';
 import { Input } from './ui/input';
+import { cn } from '@/lib/utils';
 
 const NavbarButtonOptions = [
     {
@@ -42,7 +43,15 @@ export const Navbar = () => {
                         key={`${name}-${index}`}
                         className="group flex cursor-pointer flex-col items-center justify-center gap-1"
                     >
-                        <Icon className="size-4 group-hover:text-blue-500" />
+                        <Icon
+                            className={cn(
+                                'size-4 transition-all duration-300 ease-in-out group-hover:text-blue-500',
+                                {
+                                    'group-hover:animate-wiggle': name !== 'Settings',
+                                    'group-hover:animate-spin-slow': name === 'Settings',
+                                }
+                            )}
+                        />
                         <span className="text-xs group-hover:text-blue-500">{name}</span>
                     </div>
                 ))}

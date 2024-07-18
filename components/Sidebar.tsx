@@ -11,16 +11,16 @@ import Link from 'next/link';
 
 export const Sidebar: FC<PropsWithChildren> = ({ children }) => {
     return (
-        <aside className="hidden h-full w-[20%] rounded bg-white sm:flex">
+        <aside className="hidden h-full w-52 rounded bg-white sm:flex">
             <nav className="flex h-full w-full flex-col p-3 shadow-lg dark:text-white">
                 <span className="text-xs font-semibold">Settings</span>
 
-                <ul className={cn('flex-1 space-y-2 px-4')}>{children}</ul>
+                <ul className={cn('mt-2 flex-1 space-y-2 px-2')}>{children}</ul>
 
                 <div className="flex w-full items-center justify-center">
-                    <Button variant={'outline'}>
+                    <Button variant={'outline'} className="w-full">
                         <ArrowLeftToLine className="mr-2 size-4" />
-                        <span>Back to Dashboard</span>
+                        <span className="text-xs">Back to Dashboard</span>
                     </Button>
                 </div>
             </nav>

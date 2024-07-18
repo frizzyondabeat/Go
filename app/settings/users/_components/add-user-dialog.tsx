@@ -10,8 +10,8 @@ export const AddUserDialog = () => {
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button className="bg-blue-500 transition-all duration-300 ease-in-out hover:bg-blue-700">
-                    <PlusCircle className="mr-2 size-4" />
-                    <span>New user</span>
+                    <PlusCircle className="size-4 @lg:mr-2" />
+                    <span className="hidden @lg:flex">New user</span>
                 </Button>
             </DialogTrigger>
             <DialogContent>

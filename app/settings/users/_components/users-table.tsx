@@ -12,7 +12,7 @@ import {
     getSortedRowModel,
     useReactTable,
 } from '@tanstack/react-table';
-import { ArrowUpDown, ListFilter, Search } from 'lucide-react';
+import { ArrowUpDown, ListFilter, Loader, Loader2, Search } from 'lucide-react';
 import * as React from 'react';
 
 import { api } from '@/app/_api/axios';
@@ -173,10 +173,10 @@ export function UsersTable() {
     });
 
     return (
-        <div className="w-full rounded-md bg-white">
+        <div className="w-full rounded-md bg-white @container">
             <div className="flex items-center justify-between p-4">
                 <div className="flex items-center gap-3">
-                    <div className="relative hidden h-full items-center justify-center md:flex">
+                    <div className="relative flex h-full items-center justify-center">
                         <Input
                             placeholder="Filter emails..."
                             value={(table.getColumn('email')?.getFilterValue() as string) ?? ''}
@@ -188,8 +188,8 @@ export function UsersTable() {
                         <Search size={18} className="absolute left-3 text-slate-500" />
                     </div>
                     <Button variant="outline">
-                        <ListFilter className="mr-2" />
-                        <span>Filter</span>
+                        <ListFilter className="size-4 @lg:mr-2" />
+                        <span className="hidden @lg:flex">Filter</span>
                     </Button>
                 </div>
                 <AddUserDialog />
@@ -215,7 +215,16 @@ export function UsersTable() {
                         ))}
                     </TableHeader>
                     <TableBody>
-                        {table.getRowModel().rows?.length ? (
+                        {query.isLoading ? (
+                            <TableCell
+                                colSpan={columns.length}
+                                className="items-center justify-center text-center"
+                            >
+                                <div className="flex items-center justify-center">
+                                    <Loader className="size-16 animate-spin-slower" />
+                                </div>
+                            </TableCell>
+                        ) : table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map(row => (
                                 <TableRow
                                     key={row.id}
