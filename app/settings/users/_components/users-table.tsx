@@ -1,6 +1,5 @@
 'use client';
 
-import * as React from 'react';
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -13,8 +12,10 @@ import {
     getSortedRowModel,
     useReactTable,
 } from '@tanstack/react-table';
-import { ArrowUpDown, ChevronDown, ListFilter, MoreHorizontal, Search, User } from 'lucide-react';
+import { ArrowUpDown, ListFilter, Search } from 'lucide-react';
+import * as React from 'react';
 
+import { api } from '@/app/_api/axios';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
@@ -26,51 +27,17 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from '@/components/ui/dialog';
-import { EditUserForm } from './edit-user-form';
-import { AddUserForm } from './add-user-form';
+import { useQuery } from '@tanstack/react-query';
+import { AddUserDialog } from './add-user-dialog';
 import { EditUserDialog } from './edit-user-dialog';
 import { RemoveUserDialog } from './remove-user-dialog';
+import { toastHandler } from '@/utils/toast';
 
 const roleColors = {
     administrator: 'bg-blue-100 text-blue-800',
     'sales-manager': 'bg-green-100 text-green-800',
     'sales-representative': 'bg-amber-100 text-amber-800',
 };
-
-const data: User[] = [
-    {
-        id: 'm5gr84i9',
-        name: 'Ken',
-        role: 'administrator',
-        email: 'ken99@yahoo.com',
-    },
-    {
-        id: '3u1reuv4',
-        name: 'Ken',
-        role: 'sales-manager',
-        email: 'Abe45@gmail.com',
-    },
-    {
-        id: 'derv1ws0',
-        name: 'Ken',
-        role: 'sales-manager',
-        email: 'Monserrat44@gmail.com',
-    },
-    {
-        id: '5kma53ae',
-        name: 'Ken',
-        role: 'sales-representative',
-        email: 'Silas22@gmail.com',
-    },
-];
 
 export type User = {
     id: string;
@@ -168,6 +135,24 @@ export function UsersTable() {
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = React.useState({});
 
+    const query = useQuery({
+        queryKey: ['users'],
+        queryFn: async () => {
+            return (await api.get('/users')).data;
+        },
+    });
+
+    const data = query.data ?? [];
+
+    if (query.isError) {
+        toastHandler({
+            type: 'error',
+            message: 'Failed to fetch users',
+            id: 'users',
+            title: 'Error',
+        });
+    }
+
     const table = useReactTable({
         data,
         columns,
@@ -189,22 +174,25 @@ export function UsersTable() {
 
     return (
         <div className="w-full rounded-md bg-white">
-            <div className="flex items-center gap-3 p-4">
-                <div className="relative hidden h-full items-center justify-center md:flex">
-                    <Input
-                        placeholder="Filter emails..."
-                        value={(table.getColumn('email')?.getFilterValue() as string) ?? ''}
-                        onChange={event =>
-                            table.getColumn('email')?.setFilterValue(event.target.value)
-                        }
-                        className="max-w-sm bg-slate-50 px-10 dark:bg-slate-50/5"
-                    />
-                    <Search size={18} className="absolute left-3 text-slate-500" />
+            <div className="flex items-center justify-between p-4">
+                <div className="flex items-center gap-3">
+                    <div className="relative hidden h-full items-center justify-center md:flex">
+                        <Input
+                            placeholder="Filter emails..."
+                            value={(table.getColumn('email')?.getFilterValue() as string) ?? ''}
+                            onChange={event =>
+                                table.getColumn('email')?.setFilterValue(event.target.value)
+                            }
+                            className="max-w-sm bg-slate-50 px-10 dark:bg-slate-50/5"
+                        />
+                        <Search size={18} className="absolute left-3 text-slate-500" />
+                    </div>
+                    <Button variant="outline">
+                        <ListFilter className="mr-2" />
+                        <span>Filter</span>
+                    </Button>
                 </div>
-                <Button variant="outline">
-                    <ListFilter className="mr-2" />
-                    <span>Filter</span>
-                </Button>
+                <AddUserDialog />
             </div>
             <div>
                 <Table>

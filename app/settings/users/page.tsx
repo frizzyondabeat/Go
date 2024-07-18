@@ -41,7 +41,7 @@ const UsersAndRolesPage = () => {
                 <TabsContent value="users">
                     <UsersTable />
                 </TabsContent>
-                <TabsContent value="roles">Change your password here.</TabsContent>
+                <TabsContent value="roles"></TabsContent>
             </Tabs>
         </div>
     );

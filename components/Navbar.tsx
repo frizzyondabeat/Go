@@ -31,7 +31,7 @@ export const Navbar = () => {
                 <div className="relative hidden h-full items-center justify-center md:flex">
                     <Input
                         placeholder="Search here..."
-                        className="w-96 border-0 bg-slate-50 px-10 dark:bg-slate-50/5"
+                        className="w-96 bg-slate-50 px-10 dark:bg-slate-50/5"
                     />
                     <Search size={18} className="absolute left-3 text-slate-500" />
                 </div>

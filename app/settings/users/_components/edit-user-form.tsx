@@ -21,8 +21,12 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, LoaderCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { api } from '@/app/_api/axios';
+import { toastHandler } from '@/utils/toast';
+import { cn } from '@/lib/utils';
 
 type EditUserFormProps = {
     defaultValues: User;
@@ -41,14 +45,41 @@ export const EditUserForm: FC<EditUserFormProps> = ({ defaultValues, setOpen }) 
         },
     });
 
+    const queryClient = useQueryClient();
+
+    const { mutate, isPending } = useMutation({
+        mutationFn: (data: EditUserType) => {
+            return api.put(`/users/${defaultValues.id}`, data);
+        },
+        onSuccess: () => {
+            setOpen(false);
+            queryClient.invalidateQueries({
+                queryKey: ['users'],
+            });
+            toastHandler({
+                id: 'update-user',
+                title: 'User updated successfully',
+                type: 'success',
+                message: 'User has been updated successfully',
+            });
+        },
+        onError: () => {
+            toastHandler({
+                id: 'update-user',
+                title: 'Failed to update user',
+                type: 'error',
+                message: 'Failed to update user',
+            });
+        },
+    });
+
     const onSubmit = (data: EditUserType) => {
-        console.log(data);
-        setOpen(false);
+        mutate(data);
     };
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="mt-5 w-full space-y-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="mt-5 w-full space-y-6">
                 <FormField
                     control={form.control}
                     name="email"
@@ -111,13 +142,13 @@ export const EditUserForm: FC<EditUserFormProps> = ({ defaultValues, setOpen }) 
                                     {showPassword ? (
                                         <Eye
                                             size={24}
-                                            className="absolute right-2 cursor-pointer text-gray-400"
+                                            className="absolute right-2 cursor-pointer stroke-1 text-gray-400"
                                             onClick={() => setShowPassword(false)}
                                         />
                                     ) : (
                                         <EyeOff
                                             size={24}
-                                            className="absolute right-2 cursor-pointer text-gray-400"
+                                            className="absolute right-2 cursor-pointer stroke-1 text-gray-400"
                                             onClick={() => setShowPassword(true)}
                                         />
                                     )}
@@ -135,7 +166,14 @@ export const EditUserForm: FC<EditUserFormProps> = ({ defaultValues, setOpen }) 
                     type="submit"
                     className="w-full bg-blue-500 transition-all duration-300 ease-in-out hover:bg-blue-700"
                 >
-                    Update User
+                    {isPending ? (
+                        <div className="flex items-center justify-center gap-2">
+                            <LoaderCircle className={cn('animate-spin')} size={24} />
+                            <span>Updating user...</span>
+                        </div>
+                    ) : (
+                        'Update User'
+                    )}
                 </Button>
             </form>
         </Form>

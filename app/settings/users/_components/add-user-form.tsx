@@ -21,21 +21,56 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { addUserSchema, AddUserType } from '@/types/schemas/add-user-schema';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, LoaderCircle } from 'lucide-react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { api } from '@/app/_api/axios';
+import { toastHandler } from '@/utils/toast';
+import { cn } from '@/lib/utils';
 
-export const AddUserForm: FC = () => {
+type AddUserFormProps = {
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export const AddUserForm: FC<AddUserFormProps> = ({ setOpen }) => {
     const [showPassword, setShowPassword] = useState(false);
+    const queryClient = useQueryClient();
     const form = useForm<AddUserType>({
         resolver: zodResolver(addUserSchema),
     });
 
+    const { mutate, isPending } = useMutation({
+        mutationFn: (data: AddUserType) => {
+            return api.post('/users', data);
+        },
+        onSuccess: () => {
+            setOpen(false);
+            queryClient.invalidateQueries({
+                queryKey: ['users'],
+            });
+            toastHandler({
+                id: 'add-user',
+                title: 'User added successfully',
+                type: 'success',
+                message: 'User has been added successfully',
+            });
+        },
+        onError: () => {
+            toastHandler({
+                id: 'add-user',
+                title: 'Failed to add user',
+                type: 'error',
+                message: 'Failed to add user',
+            });
+        },
+    });
+
     const onSubmit = (data: AddUserType) => {
-        console.log(data);
+        mutate(data);
     };
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="mt-5 w-full space-y-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="mt-5 w-full space-y-6">
                 <FormField
                     control={form.control}
                     name="email"
@@ -98,21 +133,19 @@ export const AddUserForm: FC = () => {
                                     {showPassword ? (
                                         <Eye
                                             size={24}
-                                            className="absolute right-2 cursor-pointer text-gray-400"
+                                            className="absolute right-2 cursor-pointer stroke-1 text-gray-400"
                                             onClick={() => setShowPassword(false)}
                                         />
                                     ) : (
                                         <EyeOff
                                             size={24}
-                                            className="absolute right-2 cursor-pointer text-gray-400"
+                                            className="absolute right-2 cursor-pointer stroke-1 text-gray-400"
                                             onClick={() => setShowPassword(true)}
                                         />
                                     )}
                                 </div>
                             </FormControl>
-                            <FormDescription>
-                                Password must be at least 8 characters long
-                            </FormDescription>
+
                             <FormMessage {...field} />
                         </FormItem>
                     )}
@@ -122,7 +155,14 @@ export const AddUserForm: FC = () => {
                     type="submit"
                     className="w-full bg-blue-500 transition-all duration-300 ease-in-out hover:bg-blue-700"
                 >
-                    Update User
+                    {isPending ? (
+                        <div className="flex items-center justify-center gap-2">
+                            <LoaderCircle className={cn('animate-spin')} size={24} />
+                            <span>Adding user...</span>
+                        </div>
+                    ) : (
+                        'Add User'
+                    )}
                 </Button>
             </form>
         </Form>
