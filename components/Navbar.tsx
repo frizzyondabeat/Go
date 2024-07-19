@@ -28,11 +28,20 @@ export const Navbar = () => {
     return (
         <header className="flex h-[65px] w-full items-center justify-between border-b bg-white px-8 py-2 shadow-sm">
             <div className="flex space-x-4">
-                <Image src={Logo} alt="logo" className="size-9" quality={100} />
+                <Image
+                    src={Logo}
+                    alt="logo"
+                    className="size-9"
+                    quality={100}
+                    width={50}
+                    height={49}
+                />
                 <div className="relative hidden h-full items-center justify-center md:flex">
                     <Input
+                        name="search"
                         placeholder="Search here..."
                         className="w-96 bg-slate-50 px-10 dark:bg-slate-50/5"
+                        aria-label="Search"
                     />
                     <Search size={18} className="absolute left-3 text-slate-500" />
                 </div>
@@ -56,7 +65,14 @@ export const Navbar = () => {
                     </div>
                 ))}
                 <div className="flex items-center gap-1">
-                    <Image src={Profile} alt="profile" className="size-9" quality={100} />
+                    <Image
+                        src={Profile}
+                        alt="profile"
+                        className="size-9"
+                        quality={100}
+                        width={36}
+                        height={36}
+                    />
                     <ChevronDown size={18} className="text-slate-500" />
                 </div>
             </div>

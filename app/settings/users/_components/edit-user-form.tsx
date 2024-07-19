@@ -1,19 +1,14 @@
-import { editUserSchema, EditUserType } from '@/types/schemas/edit-user-schema';
-import React, { FC, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { User } from './users-table';
+import { api } from '@/app/_api/axios';
+import { Button } from '@/components/ui/button';
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
     FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-
 import {
     Select,
     SelectContent,
@@ -21,12 +16,15 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { Eye, EyeOff, LoaderCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '@/app/_api/axios';
-import { toastHandler } from '@/utils/toast';
 import { cn } from '@/lib/utils';
+import { User } from '@/types/general-types';
+import { editUserSchema, EditUserType } from '@/types/schemas/edit-user-schema';
+import { toastHandler } from '@/utils/toast';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Eye, EyeOff, LoaderCircle } from 'lucide-react';
+import React, { FC, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 type EditUserFormProps = {
     defaultValues: User;
@@ -138,7 +136,7 @@ export const EditUserForm: FC<EditUserFormProps> = ({ defaultValues, setOpen }) 
                             <FormLabel>Password</FormLabel>
                             <FormControl>
                                 <div className="relative hidden h-full items-center justify-center md:flex">
-                                    <Input {...field} type="password" />
+                                    <Input {...field} type={showPassword ? 'text' : 'password'} />
                                     {showPassword ? (
                                         <Eye
                                             size={24}
@@ -154,9 +152,6 @@ export const EditUserForm: FC<EditUserFormProps> = ({ defaultValues, setOpen }) 
                                     )}
                                 </div>
                             </FormControl>
-                            <FormDescription>
-                                Password must be at least 8 characters long
-                            </FormDescription>
                             <FormMessage {...field} />
                         </FormItem>
                     )}

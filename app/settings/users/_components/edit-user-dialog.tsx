@@ -4,7 +4,7 @@ import { UserIcon } from 'lucide-react';
 import React, { useState } from 'react';
 import { EditUserForm } from './edit-user-form';
 import { Row } from '@tanstack/react-table';
-import { User } from './users-table';
+import { User } from '@/types/general-types';
 
 export const EditUserDialog = ({ row }: { row: Row<User> }) => {
     const [open, setOpen] = useState(false);

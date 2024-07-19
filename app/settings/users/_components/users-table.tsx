@@ -1,7 +1,6 @@
 'use client';
 
 import {
-    ColumnDef,
     ColumnFiltersState,
     SortingState,
     VisibilityState,
@@ -12,12 +11,10 @@ import {
     getSortedRowModel,
     useReactTable,
 } from '@tanstack/react-table';
-import { ArrowUpDown, ListFilter, Loader, Loader2, Search } from 'lucide-react';
+import { ListFilter, Loader, Search } from 'lucide-react';
 import * as React from 'react';
-
 import { api } from '@/app/_api/axios';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import {
     Table,
@@ -27,107 +24,10 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { toastHandler } from '@/utils/toast';
 import { useQuery } from '@tanstack/react-query';
 import { AddUserDialog } from './add-user-dialog';
-import { EditUserDialog } from './edit-user-dialog';
-import { RemoveUserDialog } from './remove-user-dialog';
-import { toastHandler } from '@/utils/toast';
-
-const roleColors = {
-    administrator: 'bg-blue-100 text-blue-800',
-    'sales-manager': 'bg-green-100 text-green-800',
-    'sales-representative': 'bg-amber-100 text-amber-800',
-};
-
-export type User = {
-    id: string;
-    name: string;
-    role: 'administrator' | 'sales-manager' | 'sales-representative';
-    email: string;
-    password?: string;
-};
-
-export const columns: ColumnDef<User>[] = [
-    {
-        id: 'select',
-        header: ({ table }) => (
-            <Checkbox
-                checked={
-                    table.getIsAllPageRowsSelected() ||
-                    (table.getIsSomePageRowsSelected() && 'indeterminate')
-                }
-                onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
-                aria-label="Select all"
-            />
-        ),
-        cell: ({ row }) => (
-            <Checkbox
-                checked={row.getIsSelected()}
-                onCheckedChange={value => row.toggleSelected(!!value)}
-                aria-label="Select row"
-            />
-        ),
-        enableSorting: false,
-        enableHiding: false,
-    },
-    {
-        accessorKey: 'name',
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-                >
-                    Name
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-            );
-        },
-        cell: ({ row }) => <div>{row.getValue('name')}</div>,
-    },
-    {
-        accessorKey: 'email',
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-                >
-                    Email
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-            );
-        },
-        cell: ({ row }) => <div className="lowercase">{row.getValue('email')}</div>,
-    },
-    {
-        accessorKey: 'role',
-        header: 'Role',
-        cell: ({ row }) => {
-            const role = row.getValue('role') as User['role'];
-            return (
-                <div
-                    className={`w-[80%] rounded-md px-2 py-1 text-center text-xs capitalize ${roleColors[role]}`}
-                >
-                    {role.replace('-', ' ')}
-                </div>
-            );
-        },
-    },
-    {
-        id: 'actions',
-        enableHiding: false,
-        header: 'Actions',
-        cell: ({ row }) => {
-            return (
-                <div className="flex items-center gap-3">
-                    <EditUserDialog row={row} />
-                    <RemoveUserDialog row={row} />
-                </div>
-            );
-        },
-    },
-];
+import { usersColumns } from './users-table-columns';
 
 export function UsersTable() {
     const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -155,7 +55,7 @@ export function UsersTable() {
 
     const table = useReactTable({
         data,
-        columns,
+        columns: usersColumns,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
         getCoreRowModel: getCoreRowModel(),
@@ -217,7 +117,7 @@ export function UsersTable() {
                     <TableBody>
                         {query.isLoading ? (
                             <TableCell
-                                colSpan={columns.length}
+                                colSpan={usersColumns.length}
                                 className="items-center justify-center text-center"
                             >
                                 <div className="flex items-center justify-center">
@@ -242,7 +142,10 @@ export function UsersTable() {
                             ))
                         ) : (
                             <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
+                                <TableCell
+                                    colSpan={usersColumns.length}
+                                    className="h-24 text-center"
+                                >
                                     No results.
                                 </TableCell>
                             </TableRow>

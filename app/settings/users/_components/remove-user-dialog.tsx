@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Row } from '@tanstack/react-table';
 import React from 'react';
-import { User } from './users-table';
+import { User } from '@/types/general-types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/app/_api/axios';
 import { toastHandler } from '@/utils/toast';
