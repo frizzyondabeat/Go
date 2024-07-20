@@ -116,14 +116,16 @@ export function UsersTable() {
                     </TableHeader>
                     <TableBody>
                         {query.isLoading ? (
-                            <TableCell
-                                colSpan={usersColumns.length}
-                                className="items-center justify-center text-center"
-                            >
-                                <div className="flex items-center justify-center">
-                                    <Loader className="size-16 animate-spin-slower" />
-                                </div>
-                            </TableCell>
+                            <TableRow>
+                                <TableCell
+                                    colSpan={usersColumns.length}
+                                    className="items-center justify-center text-center"
+                                >
+                                    <div className="flex items-center justify-center">
+                                        <Loader className="size-16 animate-spin-slower" />
+                                    </div>
+                                </TableCell>
+                            </TableRow>
                         ) : table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map(row => (
                                 <TableRow

@@ -25,10 +25,12 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <ReactQueryProvider>
-                <ToastProvider />
-                <body className={satoshi.className}>{children}</body>
-            </ReactQueryProvider>
+            <body className={satoshi.className}>
+                <ReactQueryProvider>
+                    <ToastProvider />
+                    {children}
+                </ReactQueryProvider>
+            </body>
         </html>
     );
 }

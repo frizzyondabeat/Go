@@ -41,6 +41,7 @@ export const usersColumns: ColumnDef<User>[] = [
             return (
                 <Button
                     variant="ghost"
+                    aria-label="Sort by name"
                     onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                 >
                     Name
@@ -55,6 +56,7 @@ export const usersColumns: ColumnDef<User>[] = [
         header: ({ column }) => {
             return (
                 <Button
+                    aria-label="Sort by email"
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                 >

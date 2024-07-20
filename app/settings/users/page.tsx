@@ -11,7 +11,7 @@ const UsersAndRolesPage = () => {
     // const tab = searchParams.get('tab') || 'users';
 
     return (
-        <div className="flex h-full w-full flex-1 flex-col gap-7">
+        <main className="flex h-full w-full flex-1 flex-col gap-7">
             <UsersPageBreadCrumb />
             <div>
                 <h1 className="text-xl font-semibold">Users & Roles</h1>
@@ -43,7 +43,7 @@ const UsersAndRolesPage = () => {
                 </TabsContent>
                 <TabsContent value="roles"></TabsContent>
             </Tabs>
-        </div>
+        </main>
     );
 };
 

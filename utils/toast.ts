@@ -36,7 +36,7 @@ export const toastHandler = <T>({
     success,
     error,
     ...props
-}: ToastProps<T>) => {
+}: ToastProps<T>): void => {
     switch (type) {
         case 'success':
             toast.success(title, { description: message, className, ...props });
